@@ -101,7 +101,7 @@ bool Graph<V,E>::AddEdge(V from, V to, E edge, double weight)
             v_to = &*iter;
         iter++;
     }
-    if(v_from && v_to)
+    if(v_from && v_to && !(v_from->ExistsEdge(edge) || v_to->ExistsEdge(edge)))
     {
         v_from->AddEdge(edge, v_to, weight);
         v_to->AddEdge(edge, v_from, weight);
@@ -114,6 +114,8 @@ bool Graph<V,E>::AddEdge(V from, V to, E edge, double weight)
             _errno += "The second vertex was not found.\n";
         if(!v_from)
             _errno += "The first vertex was not found.\n";
+        if(v_from->ExistsEdge(edge))
+            _errno += "Edge already exists.\n";
     }
     return false;
 }
@@ -184,6 +186,7 @@ bool Graph<V,E>::DeleteEdge(V from, V to, E edge)
 template <typename V, typename E>
 void Graph<V,E>::DepthFirst(void (*visit)(V))
 {
+    cout<<_vertices.front()._edges.front()._data<<endl;
     
 }
 
@@ -210,6 +213,7 @@ void Graph<V,E>::BreadthFirst(void (*visit)(V))
         Vertex<V, E> adj = vtex;
         for(adj.Begin(); !adj.IsDone(); adj.MoveNext())
         {
+            //Vertex<V, E> & link_vert = adj.GetEdge().GetLink();
             if(!adj.GetEdge().GetLink().Processed())
             {
                 adj.GetEdge().GetLink().Processed() = true;
@@ -243,8 +247,6 @@ void Graph<V,E>::MoveNext()
     _internal++;
 }
 
-
-
 template <typename V, typename E>
 Vertex<V, E> & Graph<V,E>::GetVertex()
 {
@@ -254,9 +256,7 @@ Vertex<V, E> & Graph<V,E>::GetVertex()
 template <typename V, typename E>
 bool Graph<V,E>::IsDone()
 {
-    if(_internal == _vertices.end())
-        return true;
-    return false;
+    return _internal == _vertices.end();
 }
 
 template <typename V, typename E>

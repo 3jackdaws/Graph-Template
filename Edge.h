@@ -10,11 +10,13 @@
 #define Edge_h
 
 template <typename V, typename E> class Vertex;
+template <typename V, typename E> class Graph;
 
 template <typename V, typename E>
 class Edge
 {
 public:
+    friend class Graph<V,E>;
     Edge();
     Edge(E, Vertex<V, E> *, double);
     Edge(const Edge & cp);

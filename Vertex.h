@@ -11,10 +11,14 @@
 
 #include "Edge.h"
 
+//template <typename V, typename E> class Graph;
+
 template <typename V, typename E>
 class Vertex
 {
 public:
+    
+    friend class Graph<V,E>;
     Vertex();
     Vertex(V data);
     Vertex(const Vertex & cp);
@@ -22,8 +26,7 @@ public:
     
     V GetData();
     void SetData(V);
-    bool IsProcessed();
-    void SetProcessed(bool);
+
     void AddEdge(E, Vertex<V,E> *,double);
     bool RemoveEdge(E);
     
@@ -33,6 +36,8 @@ public:
     bool IsDone();
     Edge<V,E> & GetEdge();
     bool & Processed();
+    
+    bool ExistsEdge(E data);
 
 private:
     
@@ -81,6 +86,12 @@ V Vertex<V, E>::GetData()
 }
 
 template <typename V, typename E>
+void Vertex<V,E>::SetData(V data)
+{
+    _data = data;
+}
+
+template <typename V, typename E>
 void Vertex<V, E>::AddEdge(E data, Vertex<V,E> * link, double weight)
 {
     _edges.emplace_back(data, link, weight);
@@ -113,9 +124,7 @@ bool Vertex<V, E>::RemoveEdge(E data)
         }
         iter++;
     }
-    if(found)
-        return true;
-    return false;
+    return found;
 }
 
 template <typename V, typename E>
@@ -140,16 +149,27 @@ Edge<V, E> & Vertex<V, E>::GetEdge()
 template <typename V, typename E>
 bool Vertex<V, E>::IsDone()
 {
-    if(_internal == _edges.end())
-    {
-        return true;
-    }
-    return false;
+    return _internal == _edges.end();
 }
 
 template <typename V, typename E>
 bool & Vertex<V, E>::Processed()
 {
     return _processed;
+}
+
+template <typename V, typename E>
+bool Vertex<V, E>::ExistsEdge(E data)
+{
+    bool found = false;
+    typename std::list<Edge<V, E>>::iterator iter;
+    for (iter = _edges.begin(); !found && iter != _edges.end(); iter++)
+    {
+        if(iter->GetData() == data)
+        {
+            found = true;
+        }
+    }
+    return found;
 }
 #endif /* Vertex_h */

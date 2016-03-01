@@ -24,49 +24,59 @@ bool Error(string emsg)
 
 int main(int argc, const char * argv[]) {
     
-//    Graph<string, string> mygraph;
-//    cout<<"===   Add Vertices   ==="<<endl;
-//    mygraph.AddVertex("Troutdale");
-//    mygraph.AddVertex("Gresham");
-//    mygraph.AddVertex("Portland");
-//    mygraph.AddVertex("Sandy");
-//    mygraph.AddVertex("Fairview");
-//    mygraph.AddVertex("Rockwood");
-//    mygraph.AddVertex("Welches");
-//    
-//    
-//    
-//    cout<<"===   Add Edges   ==="<<endl;
-//    mygraph.AddEdge("Troutdale", "Gresham", "Road", 10) || cout<<mygraph.GetError();
-//    mygraph.AddEdge("Troutdale", "Sandy", "Orient Drive", 20) || cout<<mygraph.GetError();
-//    mygraph.AddEdge("Troutdale", "Portland", "Stark Street", 23) || cout<<mygraph.GetError();
-//    mygraph.AddEdge("Gresham", "Rockwood", "Stark Street", 5) || cout<<mygraph.GetError();
-//    mygraph.AddEdge("Troutdale", "Fairview", "257th Drive", 6) || cout<<mygraph.GetError();
-//    mygraph.AddEdge("Gresham", "rprpf", "Stark Street", 23) || cout<<mygraph.GetError();
-//    
-//    for(mygraph.Begin(); !mygraph.IsDone(); mygraph.MoveNext())
-//    {
-//        cout<<mygraph.GetVertex().GetData()<<endl;
-//        mygraph.GetVertex().Begin();
-//        for (mygraph.GetVertex().Begin(); !mygraph.GetVertex().IsDone(); mygraph.GetVertex().MoveNext())
-//        {
-//            cout<<mygraph.GetVertex().GetEdge().GetData()<< " to " << mygraph.GetVertex().GetEdge().GetLink().GetData() <<
-//            ", Length: "<< mygraph.GetVertex().GetEdge().GetWeight() << endl;
-//        }
-//    }
-//    
-//    Graph<string, string> graph2(mygraph);
-//    mygraph.DeleteVertex("Troutdale");
-//    for(graph2.Begin(); !graph2.IsDone(); graph2.MoveNext())
-//    {
-//        cout<<graph2.GetVertex().GetData()<<endl;
-//        graph2.GetVertex().Begin();
-//        for (graph2.GetVertex().Begin(); !graph2.GetVertex().IsDone(); graph2.GetVertex().MoveNext())
-//        {
-//            cout<<graph2.GetVertex().GetEdge().GetData()<< " to " << graph2.GetVertex().GetEdge().GetLink().GetData() <<
-//            ", Length: "<< graph2.GetVertex().GetEdge().GetWeight() << endl;
-//        }
-//    }
+    Graph<string, string> mygraph;
+    cout<<"===   Add Vertices   ==="<<endl;
+    mygraph.AddVertex("Troutdale");
+    mygraph.AddVertex("Gresham");
+    mygraph.AddVertex("Portland");
+    mygraph.AddVertex("Sandy");
+    mygraph.AddVertex("Fairview");
+    mygraph.AddVertex("Rockwood");
+    mygraph.AddVertex("Welches");
+    
+    
+    
+    cout<<"===   Add Edges   ==="<<endl;
+    mygraph.AddEdge("Troutdale", "Gresham", "Road", 10) || cout<<mygraph.GetError();
+    mygraph.AddEdge("Troutdale", "Sandy", "Orient Drive", 20) || cout<<mygraph.GetError();
+    mygraph.AddEdge("Troutdale", "Portland", "Stark Street", 23) || cout<<mygraph.GetError();
+    mygraph.AddEdge("Gresham", "Rockwood", "Stark Street", 5) || cout<<mygraph.GetError();
+    mygraph.AddEdge("Troutdale", "Fairview", "257th Drive", 6) || cout<<mygraph.GetError();
+    mygraph.AddEdge("Gresham", "rprpf", "Stark Street", 23) || cout<<mygraph.GetError();
+    
+    for(mygraph.Begin(); !mygraph.IsDone(); mygraph.MoveNext())
+    {
+        cout<<mygraph.GetVertex().GetData()<<endl;
+        mygraph.GetVertex().Begin();
+        for (mygraph.GetVertex().Begin(); !mygraph.GetVertex().IsDone(); mygraph.GetVertex().MoveNext())
+        {
+            cout<<mygraph.GetVertex().GetEdge().GetData()<< " to " << mygraph.GetVertex().GetEdge().GetLink().GetData() <<
+            ", Length: "<< mygraph.GetVertex().GetEdge().GetWeight() << endl;
+        }
+    }
+//
+    Graph<string, string> graph2(mygraph);
+    mygraph.DeleteVertex("Troutdale");
+    for(mygraph.Begin(); !mygraph.IsDone(); mygraph.MoveNext())
+    {
+        cout<<mygraph.GetVertex().GetData()<<endl;
+        mygraph.GetVertex().Begin();
+        for (mygraph.GetVertex().Begin(); !mygraph.GetVertex().IsDone(); mygraph.GetVertex().MoveNext())
+        {
+            cout<<"\t"<<mygraph.GetVertex().GetEdge().GetData()<< " to " << mygraph.GetVertex().GetEdge().GetLink().GetData() <<
+            ", Length: "<< mygraph.GetVertex().GetEdge().GetWeight() << endl;
+        }
+    }
+    for(graph2.Begin(); !graph2.IsDone(); graph2.MoveNext())
+    {
+        cout<<graph2.GetVertex().GetData()<<endl;
+        graph2.GetVertex().Begin();
+        for (graph2.GetVertex().Begin(); !graph2.GetVertex().IsDone(); graph2.GetVertex().MoveNext())
+        {
+            cout<<"\t"<<graph2.GetVertex().GetEdge().GetData()<< " to " << graph2.GetVertex().GetEdge().GetLink().GetData() <<
+            ", Length: "<< graph2.GetVertex().GetEdge().GetWeight() << endl;
+        }
+    }
 
     cout<<" = = = = = INT Testing = = = = = "<<endl;
     
@@ -90,10 +100,9 @@ int main(int argc, const char * argv[]) {
             ", Length: "<< intGraph.GetVertex().GetEdge().GetWeight() << endl;
         }
     }
+
     
-    
-    
-    
+
 //    for (intGraph.Begin(); !intGraph.IsDone(); intGraph.MoveNext())
 //    {
 //        cout<<intGraph.GetVertex().GetData()<<endl;
@@ -115,7 +124,7 @@ int main(int argc, const char * argv[]) {
 //    mygraph.DeleteVertex("Test");
 //    mygraph.AddEdge("Test", "Test 2", "Testerino", 2.4);
 //    mygraph.DeleteEdge("Test", "Test 2", "Testerino");
-//    mygraph.DepthFirst(&Print);
+    mygraph.DepthFirst(&Print);
 //    mygraph.BreadthFirst(&Print);
 //    mygraph.isEmpty();
 //    
