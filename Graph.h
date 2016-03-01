@@ -10,6 +10,7 @@
 #define Graph_h
 
 #include <list>
+#include <stack>
 #include "Vertex.h"
 #include <string>
 using std::string;
@@ -32,13 +33,14 @@ public:
     bool isEmpty();
     
     void Begin();
-    void End();
     Vertex<V, E> & GetVertex();
     void MoveNext();
     
     bool IsDone();
     
     std::string GetError();
+
+	void Reconstructerizerate(Vertex<V,E> & borkedVertex);
 private:
     std::list<Vertex<V,E>> _vertices;
     int _vertice_count;
@@ -54,9 +56,14 @@ Graph<V,E>::Graph() : _vertice_count(0)
 }
 
 template <typename V, typename E>
-Graph<V,E>::Graph(const Graph & cp) : _vertice_count(cp._vertice_count), _vertices(cp._vertices), _errno(cp._errno), _internal(cp._internal)
+Graph<V,E>::Graph(const Graph & cp) : _vertice_count(cp._vertice_count), _vertices(cp._vertices), _errno(cp._errno)
 {
-    
+	_internal = _vertices.begin();
+	for (int i = 0; i < _vertice_count; i++)
+	{
+		Reconstructerizerate(*_internal);
+		_internal++;
+	}
 }
 
 template <typename V, typename E>
@@ -67,7 +74,12 @@ Graph<V,E> & Graph<V,E>::operator=(const Graph<V, E> &rhs)
         _vertice_count = rhs._vertice_count;
         _vertices = rhs._vertices;
         _errno = rhs._errno;
-        _internal = rhs._internal;
+		_internal = _vertices.begin();
+		for (int i = 0; i < _vertice_count; i++)
+		{
+			Reconstructerizerate(*_internal);
+		}
+
     }
     return *this;
 }
@@ -101,7 +113,7 @@ bool Graph<V,E>::AddEdge(V from, V to, E edge, double weight)
             v_to = &*iter;
         iter++;
     }
-    if(v_from && v_to && !(v_from->ExistsEdge(edge) || v_to->ExistsEdge(edge)))
+    if(v_from && v_to && v_from != v_to && !(v_from->ExistsEdge(edge) || v_to->ExistsEdge(edge)))
     {
         v_from->AddEdge(edge, v_to, weight);
         v_to->AddEdge(edge, v_from, weight);
@@ -114,8 +126,10 @@ bool Graph<V,E>::AddEdge(V from, V to, E edge, double weight)
             _errno += "The second vertex was not found.\n";
         if(!v_from)
             _errno += "The first vertex was not found.\n";
-        if(v_from->ExistsEdge(edge))
-            _errno += "Edge already exists.\n";
+		else if (v_from->ExistsEdge(edge))
+			_errno += "Edge already exists.\n";
+		else if (v_from == v_to)
+			_errno += "Cannot link Vertex to itself";
     }
     return false;
 }
@@ -125,7 +139,7 @@ bool Graph<V,E>::DeleteVertex(V data)
 {
     typename std::list<Vertex<V,E>>::iterator iter = _vertices.begin();
     bool found = false;
-    while(iter != _vertices.end() && !found)
+    while(!found && iter != _vertices.end())
     {
         if(iter->GetData() == data)
         {
@@ -133,12 +147,15 @@ bool Graph<V,E>::DeleteVertex(V data)
             iter->Begin();
             while(!iter->IsDone())
             {
-                iter->RemoveEdge(iter->GetEdge().GetData());
-                iter->MoveNext();
+				if (iter->RemoveEdge(iter->GetEdge().GetData()))
+					iter->Begin();
+				else
+					iter->MoveNext();
             }
             _vertices.erase(iter);
         }
-        iter++;
+        if(!found)
+			iter++;
     }
     if(found)
         _vertice_count--;
@@ -186,8 +203,33 @@ bool Graph<V,E>::DeleteEdge(V from, V to, E edge)
 template <typename V, typename E>
 void Graph<V,E>::DepthFirst(void (*visit)(V))
 {
-    cout<<_vertices.front()._edges.front()._data<<endl;
-    
+	for (Begin(); !IsDone(); MoveNext())
+	{
+		_internal->Processed() = false;
+	}
+
+	std::list<Vertex<V, E>> stack;
+	Begin();
+	_internal->Processed() = true;
+	stack.push_back(*_internal);
+
+	while (!stack.empty())
+	{
+		Vertex<V, E> vtex = stack.back();
+		visit(vtex.GetData());
+		stack.pop_back();
+
+		Vertex<V, E> adj = vtex;
+		for (adj.Begin(); !adj.IsDone(); adj.MoveNext())
+		{
+			//Vertex<V, E> & link_vert = adj.GetEdge().GetLink();
+			if (!adj.GetEdge().GetLink().Processed())
+			{
+				adj.GetEdge().GetLink().Processed() = true;
+				stack.push_back(adj.GetEdge().GetLink());
+			}
+		}
+	}
 }
 
 template <typename V, typename E>
@@ -230,16 +272,33 @@ std::string Graph<V,E>::GetError()
 }
 
 template <typename V, typename E>
+void Graph<V, E>::Reconstructerizerate(Vertex<V, E>& borkedVertex)
+{
+	double weight;
+	E data;
+	V to;
+
+	std::list<Edge<V, E>> edge_list(borkedVertex._edges);
+	borkedVertex._edges.clear();
+	
+	V from = borkedVertex.GetData();
+	
+	while (!edge_list.empty())
+	{
+		data = edge_list.front().GetData();
+		weight = edge_list.front().GetWeight();
+		to = edge_list.front().GetLink().GetData();
+		AddEdge(from, to, data, weight);
+		edge_list.pop_front();
+	}
+}
+
+template <typename V, typename E>
 void Graph<V,E>::Begin()
 {
     _internal = _vertices.begin();
 }
 
-template <typename V, typename E>
-void Graph<V,E>::End()
-{
-    _internal = _vertices.end();
-}
 
 template <typename V, typename E>
 void Graph<V,E>::MoveNext()

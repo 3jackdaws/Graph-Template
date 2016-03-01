@@ -39,6 +39,8 @@ public:
     
     bool ExistsEdge(E data);
 
+	int NumEdges();
+
 private:
     
     V _data;
@@ -94,7 +96,8 @@ void Vertex<V,E>::SetData(V data)
 template <typename V, typename E>
 void Vertex<V, E>::AddEdge(E data, Vertex<V,E> * link, double weight)
 {
-    _edges.emplace_back(data, link, weight);
+	if(this != link)
+		_edges.emplace_back(data, link, weight);
 }
 
 template <typename V, typename E>
@@ -103,7 +106,7 @@ bool Vertex<V, E>::RemoveEdge(E data)
     typename std::list<Edge<V,E>>::iterator iter = _edges.begin();
     bool found = false;
     bool found_other = false;
-    while(iter != _edges.end() && !found)
+    while(!found && iter != _edges.end())
     {
         if(iter->GetData() == data)
         {
@@ -111,18 +114,21 @@ bool Vertex<V, E>::RemoveEdge(E data)
             
             iter->GetLink().Begin();
             
-            while(!iter->GetLink().IsDone() && !found_other)
+            while(!found_other && !iter->GetLink().IsDone())
             {
                 if(iter->GetLink().GetEdge().GetData() == data)
                 {
                     iter->GetLink()._edges.erase(iter->GetLink()._internal);
                     found_other = true;
                 }
-                iter->GetLink().MoveNext();
+				else
+					iter->GetLink().MoveNext();
             }
-            _edges.erase(iter);
+			if(found)
+				_edges.erase(iter);
         }
-        iter++;
+        if(!found)
+			iter++;
     }
     return found;
 }
@@ -136,7 +142,8 @@ void Vertex<V, E>::Begin()
 template <typename V, typename E>
 void Vertex<V, E>::MoveNext()
 {
-    _internal++;
+	//if(_internal != _edges.end())
+		_internal++;
 }
 
 
@@ -171,5 +178,11 @@ bool Vertex<V, E>::ExistsEdge(E data)
         }
     }
     return found;
+}
+
+template <typename V, typename E>
+int Vertex<V, E>::NumEdges()
+{
+	return _edges.size();
 }
 #endif /* Vertex_h */

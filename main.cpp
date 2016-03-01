@@ -5,10 +5,11 @@
 //  Created by Ian Murphy on 2/27/16.
 //  Copyright © 2016 Ian Murphy. All rights reserved.
 //
-
+#define _CRTDBG_MAP_ALLOC
 #include <iostream>
 using std::cout;
 using std::endl;
+#include <time.h>
 #include "Graph.h"
 
 void Print(string data)
@@ -22,8 +23,8 @@ bool Error(string emsg)
     return true;
 }
 
-int main(int argc, const char * argv[]) {
-    
+int main() {
+	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
     Graph<string, string> mygraph;
     cout<<"===   Add Vertices   ==="<<endl;
     mygraph.AddVertex("Troutdale");
@@ -103,45 +104,50 @@ int main(int argc, const char * argv[]) {
 
     
 
-//    for (intGraph.Begin(); !intGraph.IsDone(); intGraph.MoveNext())
-//    {
-//        cout<<intGraph.GetVertex().GetData()<<endl;
-//    }
-//    
-//    Graph<int, int> intGraph2(intGraph);
-//    for (int i = 5; i<490; i++)
-//    {
-//        if(i>30)
-//            intGraph2.DeleteVertex(i) || cout<<intGraph2.GetError();
-//    }
-//    for (intGraph2.Begin(); !intGraph2.IsDone(); intGraph2.MoveNext())
-//    {
-//        cout<<intGraph2.GetVertex().GetData()<<endl;
-//    }
-//    
-//    mygraph.AddVertex("Test");
-//    mygraph.AddVertex("Test 2");
-//    mygraph.DeleteVertex("Test");
-//    mygraph.AddEdge("Test", "Test 2", "Testerino", 2.4);
-//    mygraph.DeleteEdge("Test", "Test 2", "Testerino");
+    for (intGraph.Begin(); !intGraph.IsDone(); intGraph.MoveNext())
+    {
+        cout<<intGraph.GetVertex().GetData()<<endl;
+    }
+    
+    Graph<int, string> intGraph2(intGraph);
+    for (int i = 5; i<95; i++)
+    {
+            intGraph2.DeleteVertex(i) || cout<<intGraph2.GetError();
+    }
+    for (intGraph2.Begin(); !intGraph2.IsDone(); intGraph2.MoveNext())
+    {
+        cout<<intGraph2.GetVertex().GetData()<<endl;
+    }
+    
+    mygraph.AddVertex("Test");
+    mygraph.AddVertex("Test 2");
+    mygraph.DeleteVertex("Test");
+    mygraph.AddEdge("Test", "Test 2", "Testerino", 2.4);
+    mygraph.DeleteEdge("Test", "Test 2", "Testerino");
     mygraph.DepthFirst(&Print);
-//    mygraph.BreadthFirst(&Print);
-//    mygraph.isEmpty();
-//    
-//    mygraph.Begin();
-//    mygraph.End();
-//    mygraph.GetVertex();
-//    mygraph.MoveNext();
-//    
-//    mygraph.IsDone();
-//    
-//    mygraph.GetError();
-//    
-//    mygraph.BreadthFirst(&Print);
-//    
-//    Vertex<string, string> testVertex;
-//    Vertex<string, string> testVertex2("Hi there");
-//    testVertex = testVertex2;
-//    cout<<testVertex.GetData()<<endl;
+    mygraph.BreadthFirst(&Print);
+    mygraph.isEmpty();
+    
+    mygraph.Begin();
+    //mygraph.End();
+    mygraph.GetVertex();
+    //mygraph.MoveNext();		//Microsoft's pos list iterator implementation, if you set the iterator to the end and increment it, it crashes.
+    
+	/*std::list<int> test;
+	test.push_back(1);*/
+	/*std::list<int>::iterator int_iterator = test.begin();
+	int_iterator++;					//Actually crashes, really?
+	int_iterator++;*/
+
+    mygraph.IsDone();
+    
+    mygraph.GetError();
+    
+    mygraph.BreadthFirst(&Print);
+    
+    Vertex<string, string> testVertex;
+    Vertex<string, string> testVertex2("Hi there");
+    testVertex = testVertex2;
+    cout<<testVertex.GetData()<<endl;
     return 0;
 }
